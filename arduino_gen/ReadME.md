@@ -10,12 +10,12 @@ These appendages are the template system that are used to write Arduino Code tha
 ### filename
 The file should be in all lower case with underscores in between each word. 'list' should be the last word.
 
-Example: Encoder -> encoder_list.py
+Example: encoder_list.py
 
 ### Main Class
 The main class is a list of the individual appendages of this type. It should follow the pascal case and end in 'List'.
 
-Example: Encoder -> class EncoderList
+Example: class EncoderList
 
 #### Inheiritance
 Each list class should be a child class of Component
@@ -38,6 +38,10 @@ other appendage is tier 1. If an appendage depends on a tier 1 appendage then it
 #### Constructor
 The constructor should have no parameters (other than the obvious self) and should create the list that will hold all the individual appendages of that type.
 
+```python
+    def __init__(self):
+        self.list_ = []
+```
 
 #### add
 Required: True
@@ -48,7 +52,7 @@ device_type (`dict): dictionary containing the classes (not the objects) of all 
 
 This function should fill out an appendage struct with the information gathered from the web interface and add it to the list. It should also return the struct.
 
-Example: Encoder ->
+Example:
 
 ```python
 def add(self, json_item, device_dict, device_type):
@@ -59,16 +63,55 @@ def add(self, json_item, device_dict, device_type):
 
 #### get_includes
 Required: False
+This function has no parameters and returns a string that is the includes needed by Arduino.
 
+```python
+    def get_includes(self):
+        return '#include "Encoder.h"\n'
+```
 
 #### get_pins
 Required: False
+It is easier to later read the Arduino Code (if we ever have to) if we store the various pins used in constants that use the appendage labels. This function returns a string that makes these constants. These constants will be below the includes and above setup as expected.
+
+Example:
+```python
+    def get_pins(self):
+        rv = ""
+        for encoder in self.list_:
+            rv += "const char {0:s}_pin_a = {1:d};\n".format(encoder.label, encoder.pin_a)
+            rv += "const char {0:s}_pin_b = {1:d};\n".format(encoder.label, encoder.pin_b)
+        rv += "\n"
+        return rv
+```
 
 #### get_constructors
 Required: False
+This function has no parameters and returns a string that is all the contructors for the Arduino objects needed for this appendage.
+
+Example:
+```python
+    def get_constructors(self):
+        rv = "Encoder encoders[{0:d}] = {{\n".format(len(self.list_))
+        for encoder in self.list_:
+            rv += "\tEncoder({0:s}_pin_a, {0:s}_pin_b),\n".format(encoder.label)
+        rv = rv[:-2] + "\n};\n"
+        return rv
+```
 
 #### get_setup
 Required: False
+This function has no parameters and returns a string that is the functions for this appendage that need to run during the Arduino's setup function.
+
+Example:
+```python
+    def get_setup(self):
+        rv = ""
+        for encoder in self.list_:
+            rv += "\tpinMode({0:s}_pin_a, INPUT);\n".format(encoder.label)
+            rv += "\tpinMode({0:s}_pin_b, INPUT);\n".format(encoder.label)
+        return rv
+```
 
 #### get_commands
 Required: True
