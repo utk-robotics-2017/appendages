@@ -78,10 +78,6 @@ class EncoderList(ComponentList):
         rv += "}\n\n"
         return rv
 
-    def get_indices(self):
-        for i, encoder in enumerate(self.list_):
-            yield i, encoder
-
     def get_core_values(self):
         for i, encoder in enumerate(self.list_):
             a = {}

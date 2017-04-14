@@ -47,8 +47,8 @@ The constructor should have no parameters (other than the obvious self) and shou
 Required: True
 ##### Parameters
 json_item (`dict`): dictionary containing the information from the config (usually created through the web interface)
-device_dict (`dict): dictionary containing the appendage lists for the previously generated appendage types
-device_type (`dict): dictionary containing the classes (not the objects) of all the appendages
+device_dict (`dict`): dictionary containing the appendage lists for the previously generated appendage types
+device_type (`dict`): dictionary containing the classes (not the objects) of all the appendages
 
 This function should fill out an appendage struct with the information gathered from the web interface and add it to the list. It should also return the struct.
 
@@ -116,11 +116,50 @@ Example:
 #### get_commands
 Required: True
 
+Example:
+```python
+    def get_commands(self):
+        return "\tkReadEncoder,\n\tkReadEncoderResult,\n\tkZeroEncoder,\n"
+```
+
 #### get_command_attaches
 Required: True
 
+Example:
+```python
+    def get_command_attaches(self):
+        rv = "\tcmdMessenger.attach(kReadEncoder, readEncoder);\n"
+        rv += "\tcmdMessenger.attach(kZeroEncoder, zeroEncoder);\n"
+        return rv
+```
+
 #### get_command_functions
 Required: True
+
+Example:
+```python
+    def get_command_functions(self):
+        rv = "void readEncoder() {\n"
+        rv += "\tint indexNum = cmdMessenger.readBinArg<int>();\n"
+        rv += "\tif(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > {0:d}) {{\n".format(len(self.list_))
+        rv += "\t\tcmdMessenger.sendBinCmd(kError, kReadEncoder);\n"
+        rv += "\t\treturn;\n"
+        rv += "\t}\n"
+        rv += "\tcmdMessenger.sendBinCmd(kAcknowledge, kReadEncoder);\n"
+        rv += "\tcmdMessenger.sendBinCmd(kReadEncoderResult, encoders[indexNum].read());\n"
+        rv += "}\n\n"
+
+        rv += "void zeroEncoder() {\n"
+        rv += "\tint indexNum = cmdMessenger.readBinArg<int>();\n"
+        rv += "\tif(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > {0:d}) {{\n".format(len(self.list_))
+        rv += "\t\tcmdMessenger.sendBinCmd(kError, kZeroEncoder);\n"
+        rv += "\t\treturn;\n"
+        rv += "\t}\n"
+        rv += "\tencoders[indexNum].write(0);\n"
+        rv += "\tcmdMessenger.sendBinCmd(kAcknowledge, kZeroEncoder);\n"
+        rv += "}\n\n"
+        return rv
+```
 
 #### get_loop_functions
 Required: False
@@ -129,5 +168,15 @@ Required: False
 Required: False
 
 #### get_core_values
-
 Required: True
+
+```python
+    def get_core_values(self):
+        for i, encoder in enumerate(self.list_):
+            a = {}
+            a['index'] = i
+            a['label'] = encoder.label
+            a['type'] = "Encoder"
+            a['ticks_per_rev'] = encoder.ticks_per_rev
+            yield a
+```
