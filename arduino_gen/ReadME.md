@@ -115,6 +115,9 @@ Example:
 
 #### get_commands
 Required: True
+This function has no parameters and returns a string that is the enumeration values for the commands between the RPI and Arduino during RIP.
+
+Note: Each command enumeration should be Pascal Cased with a tab in front and a command then a new line after (Shown in the example below). This **MUST** be followed exactly.
 
 Example:
 ```python
@@ -124,6 +127,7 @@ Example:
 
 #### get_command_attaches
 Required: True
+This function has no parameters and returns a string that is the functions that attach each callback (created in get_command_fucntions) to its enumeration (created in get_commands).
 
 Example:
 ```python
@@ -135,6 +139,7 @@ Example:
 
 #### get_command_functions
 Required: True
+This function has no parameters and returns a strings that contains all the callbacks used for this appendage.
 
 Example:
 ```python
@@ -163,12 +168,17 @@ Example:
 
 #### get_loop_functions
 Required: False
+If this appendage requires any functions to run in loop a string is returned here that writes them.
+
 
 #### get_extra_functions
 Required: False
+If any extra functions need to be created in the Arduino code they are create here. This should only be used if they cannot be in an Arduino class for some reason.
 
 #### get_core_values
 Required: True
+This function yields dictionaries that RIP's core uses when setting up the appendages.
+
 
 ```python
     def get_core_values(self):
