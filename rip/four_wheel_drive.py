@@ -1,8 +1,8 @@
 import logging
 
 from .component import Component
-from ...units import *
-from ..ourlogging import setup_logging
+from ..util.units import Length, Constant, Unit, AngularVelocity, Angle
+from ..util.ourlogging import setup_logging
 
 setup_logging(__file__)
 logger = logging.getLogger(__name__)

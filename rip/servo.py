@@ -1,5 +1,5 @@
 from .component import Component
-from ...simulator.sim_servo import *
+# from ...simulator.sim_servo import *
 
 
 class Servo(Component):
@@ -15,6 +15,7 @@ class Servo(Component):
 
         if sim:
             if config['type'].lower() == "vex":
+                # TODO @Any does VexServo depend on sim?
                 self.sim_servo = VexServo()
             self.sim_value = 0
             self.sim_position = 0
@@ -43,7 +44,7 @@ class Servo(Component):
             self.sim_position = self.sim_servo.get_position(value)
             return
 
-        #assert 0 <= value <= 255
+        # assert 0 <= value <= 255
         self.spine.send(self.devname, False, self.SET, self.index, value)
 
     def detach(self):
@@ -54,6 +55,7 @@ class Servo(Component):
         self.spine.send(self.devname, False, self.DETACH, self.index)
 
     def sim_update(self, tm_diff):
+        # TODO @Any where is `value` coming from
         self.sim_position = self.sim_servo.get_position(value)
 
     def get_hal_data(self):
@@ -63,7 +65,7 @@ class Servo(Component):
         hal_data['attached'] = self.sim_attached
         return hal_data
 
-    ### RIP_COM
+    # RIP_COM
     def interact(self, parseResults):
         def help(name):
             self.__dict__["help_" + name]()

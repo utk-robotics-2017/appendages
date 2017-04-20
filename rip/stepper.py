@@ -1,5 +1,5 @@
 from .component import Component
-from ...units import *
+from ..util.units import Angle, Constant
 
 
 class Stepper(Component):

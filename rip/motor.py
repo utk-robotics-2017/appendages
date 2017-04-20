@@ -1,8 +1,9 @@
 import time
 
 from .component import Component
-from ...units import *
-from ...simulator.sim_motor import *
+from ..util.units import Constant
+# TODO fix depends on sim
+# from ...simulator.sim_motor import *
 
 
 class Motor(Component):

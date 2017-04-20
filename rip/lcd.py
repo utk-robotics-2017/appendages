@@ -1,7 +1,7 @@
 import logging
 from .component import Component
 
-from ..ourlogging import setup_logging
+from ..util.ourlogging import setup_logging
 
 setup_logging(__file__)
 logger = logging.getLogger(__name__)

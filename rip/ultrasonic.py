@@ -1,5 +1,5 @@
 from .component import Component
-from ... import units
+from ..util import units
 
 
 class Ultrasonic(Component):
