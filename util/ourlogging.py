@@ -4,7 +4,7 @@ import logging.handlers
 import os
 import sys
 import time
-import atexit
+# import atexit
 from .colors import color
 
 logger = None
@@ -89,7 +89,7 @@ def Logger():
                     s = color(s, fg='blue')
                 elif record.levelname == 'INFO':
                     pass
- 
+
                 return s
         ch.setFormatter(AnsiColorFormatter(fmt))
 

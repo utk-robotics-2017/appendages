@@ -1,10 +1,8 @@
-import logging
 from .component import Component
 
-from ..util.ourlogging import setup_logging
+from ..util.ourlogging import Logger
 
-setup_logging(__file__)
-logger = logging.getLogger(__name__)
+logger = Logger()
 
 
 class Lcd(Component):
@@ -108,7 +106,7 @@ class Lcd(Component):
         message = self.get_message()
         return message
 
-    ### RIP_COM
+    # NOTE RIP_COM
     def interact(self, parseResults):
         def help(name):
             self.__dict__["help_" + name]()
