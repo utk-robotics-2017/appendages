@@ -1,6 +1,6 @@
 from .component import Component
 
-from ..util.ourlogging import Logger
+from ..util.logger import Logger
 
 logger = Logger()
 
