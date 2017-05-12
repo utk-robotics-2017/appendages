@@ -6,6 +6,13 @@ from queue import Queue
 from threading import Thread
 from inspect import signature, Signature  # 2 different things
 
+class TypeProperty(property):
+    def __init__(self, fget=None, fset=None, fdel=None, doc=None, type_=None):
+        property.__init__(fget, fset, fdel, doc)
+        self.type_ = type_
+
+    def get_type(self):
+        return self.type_
 
 def getter_setter_gen(name, type_):
 
@@ -17,7 +24,7 @@ def getter_setter_gen(name, type_):
             raise TypeError("{} attribute must be set to an instance of {}}".format(name, type_))
         setattr(self, "__" + name, value)
 
-    return property(getter, setter)
+    return TypeProperty(fget=getter, fset=setter, type_=type_)
 
 
 # decorator that forces variables from a class to be certain types
