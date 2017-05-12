@@ -1,0 +1,63 @@
+include{
+	#include <LiquidCrystal.h>
+}
+
+constructors{
+	LiquidCrystal lcds[%{length}] = {
+		loop_seperated_by(','){
+			LiquidCrystal(!{rs}, !{enable}, !{d4}, !{d5}, !{d6}, !{d7})
+		}
+	};
+}
+
+setup{
+	// LCD inits:
+	loop_with_index('index'){
+		lcds[!{index}].begin(!{cols}, !{rows});
+	}
+}
+
+commands{
+	kPrintLCD,
+	kClearLCD,
+	kSetCursorLCD,
+}
+
+command_attaches{
+	cmdMessenger.attach(kPrintLCD, printLCD);
+	cmdMessenger.attach(kClearLCD, clearLCD);
+	cmdMessenger.attach(kSetCursor, setCursorLCD);
+}
+
+command_functions{
+	void printLCD(){\n"
+        int indexNum = cmdMessenger.readBinArg<int>();\n"
+        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %{length}) {
+        	cmdMessenger.sendBinCmd(kError, kPrintLCD);\n"
+        	return;\n"
+        }
+        String text = cmdMessenger.readStringArg();
+        lcds[indexNum].print(text);
+        cmdMessenger.sendBinCmd(kAcknowledge, kPrintLCD);
+    }
+
+    void clearLCD(){
+    	int indexNum = cmdMessenger.readBinArg<int>();\n"
+        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %A{length}) {
+        	cmdMessenger.sendBinCmd(kError, kPrintLCD);
+        	return;
+        }
+        lcds[indexNum].clear();
+        cmdMessenger.sendBinCmd(kAcknowledge, kClearLCD);
+        }
+
+        void setCursorLCD(){
+        int indexNum = cmdMessenger.readBinArg<int>();\n"
+        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %{length}) {
+        	cmdMessenger.sendBinCmd(kError, kPrintLCD);
+        	return;
+        }
+       	lcds[indexNum].setCursor(cmdMessenger.readBinArg<int>(), cmdMessenger.readBinArg<int>());
+        cmdMessenger.sendBinCmd(kAcknowledge, kSetCursorLCD);
+    }
+}
