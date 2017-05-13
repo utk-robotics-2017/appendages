@@ -40,7 +40,7 @@ command_attaches{{{
 command_functions{{{
     void readEncoder() {
         int indexNum = cmdMessenger.readBinArg<int>();
-        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%) {
+        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
             cmdMessenger.sendBinCmd(kError, kReadEncoder);
                 return;
             }
