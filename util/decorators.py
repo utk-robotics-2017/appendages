@@ -6,13 +6,6 @@ from queue import Queue
 from threading import Thread
 from inspect import signature, Signature  # 2 different things
 
-class TypeProperty(property):
-    def __init__(self, fget=None, fset=None, fdel=None, doc=None, type_=None):
-        property.__init__(fget, fset, fdel, doc)
-        self.type_ = type_
-
-    def get_type(self):
-        return self.type_
 
 def getter_setter_gen(name, type_):
 
@@ -21,10 +14,10 @@ def getter_setter_gen(name, type_):
 
     def setter(self, value):
         if not isinstance(value, type_):
-            raise TypeError("{} attribute must be set to an instance of {}}".format(name, type_))
+            raise TypeError("{} attribute must be set to an instance of {}".format(name, type_))
         setattr(self, "__" + name, value)
 
-    return TypeProperty(fget=getter, fset=setter, type_=type_)
+    return property(getter, setter)
 
 
 # decorator that forces variables from a class to be certain types
@@ -48,13 +41,15 @@ def type_check(f):
                 continue
 
             if not isinstance(arg_value, sig.parameters[arg_name].annotation):
-                raise TypeError("{} argument {} is of type {}, but should be of type {}".format(f.__name__, arg_name, type(arg_value), sig.parameters[arg_name].annotation))
+                raise TypeError("{} argument {} is of type {}, but should be of type {}"
+                                .format(f.__name__, arg_name, type(arg_value), sig.parameters[arg_name].annotation))
 
         result = f(*args, **kwargs)
 
         # check that the result is the correct type
         if sig.return_annotation != Signature.empty and not isinstance(result, sig.return_annotation):
-            raise TypeError("{} return value {} is of type {}, but should be of type {}".format(f.__name__, result, type(result), sig.return_annotation))
+            raise TypeError("{} return value {} is of type {}, but should be of type {}"
+                            .format(f.__name__, result, type(result), sig.return_annotation))
 
         return result
     return wrapper

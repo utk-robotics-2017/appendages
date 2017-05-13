@@ -1,46 +1,46 @@
-include{
-    #include "Encoder.h"
-}
+include{{{
+    "Encoder.h"
+    "test"
+    <test2>
+}}}
 
-pins{
-    loop{
-        const char !{label}_pin_a = !{pin_a};
-        const char !{label}_pin_b = !{pin_b};    
-    }
-}
+pins{{{
+    loop{{{
+        const char <<<label>>>_pin_a = <<<pin_a>>>;
+        const char <<<label>>>_pin_b = <<<pin_b>>>;    
+    }}}
+}}}
 
-// Need to come up with a way to denote all but last for the comma
-constructors{
-    Encoder encoders[%{length}] = {
-        loop{
-            Encoder(!{label}_pin_a, !{label}_pin_b)
-        }
+constructors{{{
+    Encoder encoders[%%%length%%%] = {
+        loop_seperated_by(','){{{
+            Encoder(<<<label>>>_pin_a, <<<label>>>_pin_b)
+        }}}
     };
-}
+}}}
 
-setup{
-    loop{
-        pinMode(!{label}_pin_a, INPUT);
-        pinMode(!{label}_pin_b, INPUT);
-    }
-}
+setup{{{
+    loop{{{
+        pinMode(<<<label>>>_pin_a, INPUT);
+        pinMode(<<<label>>>_pin_b, INPUT);
+    }}}
+}}}
 
-commands{
+commands{{{
     kReadEncoder,
     kReadEncoderResult,
-    kZeroEncoder
-}
+    kZeroEncoder,
+}}}
 
-command_attaches{
+command_attaches{{{
     cmdMessenger.attach(kReadEncoder, readEncoder);
     cmdMessenger.attach(kZeroEncoder, zeroEncoder);
-}
+}}}
 
-command_functions
-{
+command_functions{{{
     void readEncoder() {
         int indexNum = cmdMessenger.readBinArg<int>();
-        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %{length}) {
+        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%) {
             cmdMessenger.sendBinCmd(kError, kReadEncoder);
                 return;
             }
@@ -48,17 +48,17 @@ command_functions
             cmdMessenger.sendBinCmd(kReadEncoderResult, encoders[indexNum].read());
         }
 
-        void zeroEncoder() {
+    void zeroEncoder() {
         int indexNum = cmdMessenger.readBinArg<int>()
-        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %{length}) {
+        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
             cmdMessenger.sendBinCmd(kError, kZeroEncoder);
             return;
         }
         encoders[indexNum].write(0);
         cmdMessenger.sendBinCmd(kAcknowledge, kZeroEncoder);
     }
-}
+}}}
 
-core_values{
-    ticks_per_rev = !{ticks_per_rev}
-}
+core_values{{{
+    ticks_per_revolution = <<<ticks_per_revolution>>>
+}}}
