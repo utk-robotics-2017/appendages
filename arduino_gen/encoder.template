@@ -1,7 +1,5 @@
 include{{{
     "Encoder.h"
-    "test"
-    <test2>
 }}}
 
 pins{{{
@@ -13,7 +11,7 @@ pins{{{
 
 constructors{{{
     Encoder encoders[%%%length%%%] = {
-        loop_seperated_by(','){{{
+        loop_separated_by(','){{{
             Encoder(<<<label>>>_pin_a, <<<label>>>_pin_b)
         }}}
     };
