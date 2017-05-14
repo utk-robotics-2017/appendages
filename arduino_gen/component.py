@@ -3,7 +3,7 @@ from ..util.decorators import attr_check, type_check
 
 class Component:
         @type_check
-        def set(self, json_item: dict, class_dict: dict, device_dict: dict):
+        def __init__(self, json_item: dict, class_dict: dict, device_dict: dict):
                 for key, value in json_item.items():
                     if key == 'type':
                         continue

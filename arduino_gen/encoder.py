@@ -17,4 +17,4 @@ class Encoder(Component):
         self.pin_a = -1
         self.pin_b = -1
         self.ticks_per_revolution = -1
-        self.set(json_item, class_dict, device_dict)
+        Component.__init__(self, json_item, class_dict, device_dict)

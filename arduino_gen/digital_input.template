@@ -1,0 +1,45 @@
+pins{{{
+	loop{{{
+		const char <<<label>>>_pin = <<<pin>>>;
+	}}}
+}}}
+
+constructors{{{
+	char switches[%%%length%%%] = {
+	loop_with_separator(','){{{
+		<<<label>>>_pin
+	}}}
+	};
+}}}
+
+setup{{{
+	loop{{{
+		if(<<<pullup>>>){{{
+			pinMode(<<<label>>>_pin, INPUT_PULLUP);
+		}}}
+		else{{{
+			pinMode(<<<label>>>_pin, INPUT);
+		}}}
+	}}}
+}}}
+
+commands{{{
+	kReadSwitch,
+	kReadSwitchResult,
+}}}
+
+command_attaches{{{
+	cmdMessenger.attach(kReadSwitch, readSwitch);
+}}}
+
+command_functions{{{
+	void readSwitch() {
+        int indexNum = cmdMessenger.readBinArg<int>();
+        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
+        	cmdMessenger.sendBinCmd(kError, kReadSwitch);
+        	return;
+        }
+        cmdMessenger.sendBinCmd(kAcknowledge, kReadSwitch);
+        cmdMessenger.sendBinCmd(kReadSwitchResult, digitalRead(switches[indexNum]));
+    }
+}}}

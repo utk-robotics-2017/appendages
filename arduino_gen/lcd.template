@@ -1,40 +1,40 @@
-include{
-	#include <LiquidCrystal.h>
-}
+include{{{
+	<LiquidCrystal.h>
+}}}
 
-constructors{
-	LiquidCrystal lcds[%{length}] = {
-		loop_seperated_by(','){
-			LiquidCrystal(!{rs}, !{enable}, !{d4}, !{d5}, !{d6}, !{d7})
-		}
+constructors{{{
+	LiquidCrystal lcds[%%%length%%%] = {
+		loop_separated_by(','){{{
+			LiquidCrystal(<<<rs>>>, <<<enable>>>, <<<d4>>>, <<<d5>>>, <<<d6>>>, <<<d7>>>)
+        }}}
 	};
-}
+}}}
 
-setup{
+setup{{{
 	// LCD inits:
 	loop_with_index('index'){
-		lcds[!{index}].begin(!{cols}, !{rows});
+		lcds[<<<index>>>].begin(<<<cols>>>, <<<rows>>>);
 	}
-}
+}}}
 
-commands{
+commands{{{
 	kPrintLCD,
 	kClearLCD,
 	kSetCursorLCD,
-}
+}}}
 
-command_attaches{
+command_attaches{{{
 	cmdMessenger.attach(kPrintLCD, printLCD);
 	cmdMessenger.attach(kClearLCD, clearLCD);
 	cmdMessenger.attach(kSetCursor, setCursorLCD);
-}
+}}}
 
-command_functions{
-	void printLCD(){\n"
-        int indexNum = cmdMessenger.readBinArg<int>();\n"
-        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %{length}) {
-        	cmdMessenger.sendBinCmd(kError, kPrintLCD);\n"
-        	return;\n"
+command_functions{{{
+	void printLCD(){
+        int indexNum = cmdMessenger.readBinArg<int>();
+        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
+        	cmdMessenger.sendBinCmd(kError, kPrintLCD);
+        	return;
         }
         String text = cmdMessenger.readStringArg();
         lcds[indexNum].print(text);
@@ -42,18 +42,18 @@ command_functions{
     }
 
     void clearLCD(){
-    	int indexNum = cmdMessenger.readBinArg<int>();\n"
-        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %A{length}) {
+    	int indexNum = cmdMessenger.readBinArg<int>();
+        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
         	cmdMessenger.sendBinCmd(kError, kPrintLCD);
         	return;
         }
         lcds[indexNum].clear();
         cmdMessenger.sendBinCmd(kAcknowledge, kClearLCD);
-        }
+    }
 
-        void setCursorLCD(){
-        int indexNum = cmdMessenger.readBinArg<int>();\n"
-        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %{length}) {
+    void setCursorLCD(){
+        int indexNum = cmdMessenger.readBinArg<int>();
+        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
         	cmdMessenger.sendBinCmd(kError, kPrintLCD);
         	return;
         }
