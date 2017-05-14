@@ -1,40 +1,40 @@
 include{{{
-	<LiquidCrystal.h>
+    <LiquidCrystal.h>
 }}}
 
 constructors{{{
-	LiquidCrystal lcds[%%%length%%%] = {
-		loop_separated_by(','){{{
-			LiquidCrystal(<<<rs>>>, <<<enable>>>, <<<d4>>>, <<<d5>>>, <<<d6>>>, <<<d7>>>)
+    LiquidCrystal lcds[%%%length%%%] = {
+        loop_separated_by(','){{{
+            LiquidCrystal(<<<rs>>>, <<<enable>>>, <<<d4>>>, <<<d5>>>, <<<d6>>>, <<<d7>>>)
         }}}
-	};
+    };
 }}}
 
 setup{{{
-	// LCD inits:
-	loop_with_index('index'){
-		lcds[<<<index>>>].begin(<<<cols>>>, <<<rows>>>);
-	}
+    // LCD inits:
+    loop_with_index('index'){
+        lcds[<<<index>>>].begin(<<<cols>>>, <<<rows>>>);
+    }
 }}}
 
 commands{{{
-	kPrintLCD,
-	kClearLCD,
-	kSetCursorLCD,
+    kPrintLCD,
+    kClearLCD,
+    kSetCursorLCD,
 }}}
 
 command_attaches{{{
-	cmdMessenger.attach(kPrintLCD, printLCD);
-	cmdMessenger.attach(kClearLCD, clearLCD);
-	cmdMessenger.attach(kSetCursor, setCursorLCD);
+    cmdMessenger.attach(kPrintLCD, printLCD);
+    cmdMessenger.attach(kClearLCD, clearLCD);
+    cmdMessenger.attach(kSetCursor, setCursorLCD);
 }}}
 
 command_functions{{{
-	void printLCD(){
+    void printLCD(){
         int indexNum = cmdMessenger.readBinArg<int>();
         if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
-        	cmdMessenger.sendBinCmd(kError, kPrintLCD);
-        	return;
+            cmdMessenger.sendBinCmd(kError, kPrintLCD);
+            return;
         }
         String text = cmdMessenger.readStringArg();
         lcds[indexNum].print(text);
@@ -42,10 +42,10 @@ command_functions{{{
     }
 
     void clearLCD(){
-    	int indexNum = cmdMessenger.readBinArg<int>();
+        int indexNum = cmdMessenger.readBinArg<int>();
         if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
-        	cmdMessenger.sendBinCmd(kError, kPrintLCD);
-        	return;
+            cmdMessenger.sendBinCmd(kError, kPrintLCD);
+            return;
         }
         lcds[indexNum].clear();
         cmdMessenger.sendBinCmd(kAcknowledge, kClearLCD);
@@ -54,10 +54,10 @@ command_functions{{{
     void setCursorLCD(){
         int indexNum = cmdMessenger.readBinArg<int>();
         if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
-        	cmdMessenger.sendBinCmd(kError, kPrintLCD);
-        	return;
+            cmdMessenger.sendBinCmd(kError, kPrintLCD);
+            return;
         }
-       	lcds[indexNum].setCursor(cmdMessenger.readBinArg<int>(), cmdMessenger.readBinArg<int>());
+        lcds[indexNum].setCursor(cmdMessenger.readBinArg<int>(), cmdMessenger.readBinArg<int>());
         cmdMessenger.sendBinCmd(kAcknowledge, kSetCursorLCD);
     }
 }

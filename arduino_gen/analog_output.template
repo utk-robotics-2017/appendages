@@ -1,0 +1,44 @@
+pins{{{
+    loop{{{
+        const char <<<label>>>_pin = <<<pin>>>;
+    }}}
+}}}
+
+constructors{{{
+    char analog_outputs[%%%length%%%] = {
+    loop_with_separator(','){{{
+        <<<label>>>_pin
+    }}}
+    };
+}}}
+
+setup{{{
+    loop{{{
+        pinMode(<<<label>>>_pin, OUTPUT);
+    }}}
+}}}
+
+commands{{{
+    kWriteAnalogOutput,
+}}}
+
+command_attaches{{{
+    cmdMessenger.attach(kWriteAnalogOutput, writeAnalogOutput);
+}}}
+
+command_functions{{{
+    void writeAnalogOutput() {
+        int indexNum = cmdMessenger.readBinArg<int>();
+        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
+            cmdMessenger.sendBinCmd(kError, kWriteAnalogOutput);
+            return;
+        }
+        int value = cmdMessenger.readBinArg<int>();
+        if(!cmdMessenger.isArgOk() ||value < 0 || value > 1023) {
+            cmdMessenger.sendBinCmd(kError, kWriteAnalogOutput);
+            return;
+        }
+        analogWrite(analog_outputs[indexNum], value);
+        cmdMessenger.sendBinCmd(kAcknowledge, kWriteAnalogOutput);
+    }
+}}}

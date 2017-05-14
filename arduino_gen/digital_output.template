@@ -1,0 +1,40 @@
+pins{{{
+    loop{{{
+        const char <<<label>>>_pin = <<<pin>>>;
+    }}}
+}}}
+
+constructors{{{
+    char digital_outputs[%%%length%%%] = {
+    loop_with_separator(','){{{
+        <<<label>>>_pin
+    }}}
+    };
+}}}
+
+setup{{{
+    loop{{{
+        pinMode(<<<label>>>_pin, OUTPUT);
+    }}}
+}}}
+
+commands{{{
+    kWriteDigitalOutput,
+}}}
+
+command_attaches{{{
+    cmdMessenger.attach(kWriteDigitalOutput, writeDigitalOutput);
+}}}
+
+command_functions{{{
+    void writeDigitalOutput() {
+        int indexNum = cmdMessenger.readBinArg<int>();
+        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
+            cmdMessenger.sendBinCmd(kError, kWriteDigitalOutput);
+            return;
+        }
+        bool value = cmdMessenger.readBinArg<bool>();
+        digitalWrite(digital_outputs[indexNum], value);
+        cmdMessenger.sendBinCmd(kAcknowledge, kWriteDigitalOutput);
+    }
+}}}

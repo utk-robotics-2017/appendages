@@ -1,0 +1,39 @@
+include{{{
+    "NewPing.h"
+}}}
+
+pins{{{
+    loop{{{
+        const char <<<label>>>_trigger = <<<trigger>>>;
+        const char <<<label>>>_echo = <<<echo>>>;
+    }}}
+}}}
+
+constructors{{{
+    NewPing ultrasonics[%%%length%%%] = {
+    loop_with_separator(','){{{
+        NewPing(<<<label>>>_trigger, <<<label>>>_echo)
+    }}}
+    };
+}}}
+
+commands{{{
+    kReadUltrasonic,
+    kReadUltrasonicResult,
+}}}
+
+command_attaches{{{
+    cmdMessenger.attach(kReadUltrasonic, readUltrasonic);
+}}}
+
+command_functions{{{
+    void readUltrasonic() {
+        int indexNum = cmdMessenger.readBinArg<int>();
+        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
+            cmdMessenger.sendBinCmd(kError, kReadUltrasonic);
+            return;
+        }
+        cmdMessenger.sendBinCmd(kAcknowledge, kReadUltrasonic);
+        cmdMessenger.sendBinCmd(kReadUltrasonicResult, ultrasonics[indexNum].ping_cm());
+    }
+}}}

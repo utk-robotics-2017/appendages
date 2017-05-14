@@ -1,0 +1,59 @@
+include{{{
+    "Servo.h"
+}}}
+
+pins{{{
+    loop{{{
+        const char <<<label>>>_pin = <<<pin>>>;
+    }}}
+}}}
+
+constructor{{{
+    char servo_pins[%%%length%%%] = {
+        loop{{{
+            <<<label>>>_pin
+        }}}
+    };
+
+    Servo servos[%%%length%%%];
+}}}
+
+commands{{{
+    kSetServo,
+    kDetachServo,
+}}}
+
+command_attaches{{{
+    cmdMessenger.attach(kSetServo, setServo);
+    cmdMessenger.attach(kDetachServo, detachServo);
+}}}
+
+command_function{{{
+    void setServo() {
+        int indexNum = cmdMessenger.readBinArg<int>();
+        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
+            cmdMessenger.sendBinCmd(kError, kSetServo);
+            return;
+        }
+        int value = cmdMessenger.readBinArg<int>();
+        if(!cmdMessenger.isArgOk()){
+            cmdMessenger.sendBinCmd(kError, kSetServo);
+            return;
+        }
+        if(!servos[indexNum].attached()){
+            servos[indexNum].attach(servo_pins[indexNum]);
+        }
+        servos[indexNum].write(value);
+        cmdMessenger.sendBinCmd(kAcknowledge, kSetServo);
+    }
+
+    void detachServo() {
+        int indexNum = cmdMessenger.readBinArg<int>();
+        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
+            cmdMessenger.sendBinCmd(kError, kDetachServo);
+            return;
+        }
+        servos[indexNum].detach();
+        cmdMessenger.sendBinCmd(kAcknowledge, kDetachServo);
+    }
+}}}
