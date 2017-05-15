@@ -27,3 +27,7 @@ command_attaches{{{
 	cmdMessenger.attach(kReadY, readY);
 	cmdMessenger.attach(kReadZ, readZ);
 }}}
+
+command_functions{{{
+	
+}}}

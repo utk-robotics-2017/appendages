@@ -4,7 +4,7 @@ from ..util.decorators import attr_check, type_check
 
 
 @attr_check
-class Magnetometer(Component):
+class Arm(Component):
     TIER = 1
 
     label = str
