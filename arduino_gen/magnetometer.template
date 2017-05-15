@@ -29,5 +29,18 @@ command_attaches{{{
 }}}
 
 command_functions{{{
-	
+	void readX() {
+        cmdMessenger.sendBinCmd(kAcknowledge, kReadX);
+        cmdMessenger.sendBinCmd(kReadXResult, magnetometer.readX());
+    }
+
+    void readY() {
+    	cmdMessenger.sendBinCmd(kAcknowledge, kReadY);
+    	cmdMessenger.sendBinCmd(kReadYResult, magnetometer.readY());
+    }
+
+    void readZ() {
+    	cmdMessenger.sendBinCmd(kAcknowledge, kReadZ);
+    	cmdMessenger.sendBinCmd(kReadZResult, magnetometer.readZ());
+    }
 }}}
