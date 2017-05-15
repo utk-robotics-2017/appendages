@@ -19,6 +19,7 @@ def getter_setter_gen(name, type_):
 
     return property(getter, setter)
 
+void = type(None)
 
 # decorator that forces variables from a class to be certain types
 def attr_check(cls):

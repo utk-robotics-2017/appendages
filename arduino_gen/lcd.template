@@ -12,9 +12,9 @@ constructors{{{
 
 setup{{{
     // LCD inits:
-    loop_with_index('index'){
+    loop_with_index('index'){{{
         lcds[<<<index>>>].begin(<<<cols>>>, <<<rows>>>);
-    }
+    }}}
 }}}
 
 commands{{{
@@ -60,4 +60,4 @@ command_functions{{{
         lcds[indexNum].setCursor(cmdMessenger.readBinArg<int>(), cmdMessenger.readBinArg<int>());
         cmdMessenger.sendBinCmd(kAcknowledge, kSetCursorLCD);
     }
-}
+}}}

@@ -11,7 +11,7 @@ pins{{{
 
 constructors{{{
     NewPing ultrasonics[%%%length%%%] = {
-    loop_with_separator(','){{{
+    loop_separated_by(','){{{
         NewPing(<<<label>>>_trigger, <<<label>>>_echo)
     }}}
     };

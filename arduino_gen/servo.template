@@ -28,7 +28,7 @@ command_attaches{{{
     cmdMessenger.attach(kDetachServo, detachServo);
 }}}
 
-command_function{{{
+command_functions{{{
     void setServo() {
         int indexNum = cmdMessenger.readBinArg<int>();
         if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {

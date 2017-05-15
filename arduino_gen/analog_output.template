@@ -6,7 +6,7 @@ pins{{{
 
 constructors{{{
     char analog_outputs[%%%length%%%] = {
-    loop_with_separator(','){{{
+    loop_separated_by(','){{{
         <<<label>>>_pin
     }}}
     };
