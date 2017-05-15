@@ -7,186 +7,246 @@ These appendages are the template system that are used to write Arduino Code tha
 
 ## Appendage Creation
 
-### filename
-The file should be in all lower case with underscores in between each word. 'list' should be the last word.
+### Struct
 
-Example: encoder_list.py
+#### filename
+The file should be in all lower case with underscores in between each word.
 
-### Main Class
-The main class is a list of the individual appendages of this type. It should follow the pascal case and end in 'List'.
+Example: encoder.py
 
-Example: class EncoderList
+
+### Class
+The main class is a list of the individual appendages of this type.
+
+Example:
+```python
+from .component import Component
+from ..util.decorators import attr_check, type_check
+
+@attr_check
+class Example(Component):
+    TIER = 1
+
+    label = str
+    val1 = int
+    val2 = float
+    val3 = str
+
+    @type_check
+    def __init__(self, json_item: dict, class_dict: dict, device_dict: dict):
+        self.label = ""
+        self.val1 = -1
+        self.val2 = -1.0
+        self.val3 = ""
+        Component.__init__(self, json_item, class_dict, device_dict)
+```
 
 #### Inheiritance
-Each list class should be a child class of Component
-
-Example: Encoder ->
-
-```python
-from .component_list import ComponentList
-
-
-class EncoderList(ComponentList):
-...
-```
+Each struct should be a child class of Component
 
 #### TIER
 TIER is a static variable that must be in each list class. An appendage that does not depend on any
 other appendage is tier 1. If an appendage depends on a tier 1 appendage then it is of tier 2. If it depends on a tier 2 appendage then it is of tier 3 and so on.
 
 
-#### Constructor
-The constructor should have no parameters (other than the obvious self) and should create the list that will hold all the individual appendages of that type.
+### Template
 
-```python
-    def __init__(self):
-        self.list_ = []
+#### Sections
+
+
+##### include
+Required: False
+List the include without the "#include"
+
+```
+include{{{
+    <example>
+    "example.h"
+}}}
 ```
 
-#### add
-Required: True
-##### Parameters
-json_item (`dict`): dictionary containing the information from the config (usually created through the web interface)
-device_dict (`dict`): dictionary containing the appendage lists for the previously generated appendage types
-device_type (`dict`): dictionary containing the classes (not the objects) of all the appendages
-
-This function should fill out an appendage struct with the information gathered from the web interface and add it to the list. It should also return the struct.
+##### pins
+Required: False
+The pins for each appendage will be added (usually using a loop subsection)
 
 Example:
-
-```python
-def add(self, json_item, device_dict, device_type):
-        encoder = Encoder(json_item['label'], json_item['pin_a'], json_item['pin_b'], json_item['ticks_per_rev'])
-        self.list_.append(encoder)
-        return encoder
+```
+pins{{{
+    loop{{{
+        const char <<<label>>_pin = <<<pin>>>;
+    }}}
+}}}
 ```
 
-#### get_includes
-Required: False
-This function has no parameters and returns a string that is the includes needed by Arduino.
-
-```python
-    def get_includes(self):
-        return '#include "Encoder.h"\n'
-```
-
-#### get_pins
-Required: False
-It is easier to later read the Arduino Code (if we ever have to) if we store the various pins used in constants that use the appendage labels. This function returns a string that makes these constants. These constants will be below the includes and above setup as expected.
-
-Example:
-```python
-    def get_pins(self):
-        rv = ""
-        for encoder in self.list_:
-            rv += "const char {0:s}_pin_a = {1:d};\n".format(encoder.label, encoder.pin_a)
-            rv += "const char {0:s}_pin_b = {1:d};\n".format(encoder.label, encoder.pin_b)
-        rv += "\n"
-        return rv
-```
-
-#### get_constructors
+##### constructors
 Required: False
 This function has no parameters and returns a string that is all the contructors for the Arduino objects needed for this appendage.
 
 Example:
-```python
-    def get_constructors(self):
-        rv = "Encoder encoders[{0:d}] = {{\n".format(len(self.list_))
-        for encoder in self.list_:
-            rv += "\tEncoder({0:s}_pin_a, {0:s}_pin_b),\n".format(encoder.label)
-        rv = rv[:-2] + "\n};\n"
-        return rv
+```
+constructors{{{
+    Example examples[%%%length%%%] = {
+        loop_separated_by(',') {{{
+            Example(<<<val1>>>, <<<val2>>>, <<<val3>>>)
+        }}}
+    }
+}}}
 ```
 
-#### get_setup
+##### setup
 Required: False
-This function has no parameters and returns a string that is the functions for this appendage that need to run during the Arduino's setup function.
 
 Example:
-```python
-    def get_setup(self):
-        rv = ""
-        for encoder in self.list_:
-            rv += "\tpinMode({0:s}_pin_a, INPUT);\n".format(encoder.label)
-            rv += "\tpinMode({0:s}_pin_b, INPUT);\n".format(encoder.label)
-        return rv
+```
+setup{{{
+    loop{{{
+        pinMode(<<<label>>>_pin, INPUT);
+    }}}
+}}}
 ```
 
-#### get_commands
+##### commands
 Required: True
-This function has no parameters and returns a string that is the enumeration values for the commands between the RPI and Arduino during RIP.
-
-Note: Each command enumeration should be Pascal Cased with a tab in front and a command then a new line after (Shown in the example below). This **MUST** be followed exactly.
 
 Example:
-```python
-    def get_commands(self):
-        return "\tkReadEncoder,\n\tkReadEncoderResult,\n\tkZeroEncoder,\n"
+```
+commands{{{
+    kExampleCommand,
+    kExampleCommand2,
+    kExampleCommand2Result,
+    kExampleCommand3,
+}}}
 ```
 
-#### get_command_attaches
+##### command_attaches
 Required: True
-This function has no parameters and returns a string that is the functions that attach each callback (created in get_command_fucntions) to its enumeration (created in get_commands).
 
 Example:
-```python
-    def get_command_attaches(self):
-        rv = "\tcmdMessenger.attach(kReadEncoder, readEncoder);\n"
-        rv += "\tcmdMessenger.attach(kZeroEncoder, zeroEncoder);\n"
-        return rv
+```
+command_attaches{{{
+    cmdMessenger.attach(kExampleCommand, exampleCommand);
+    cmdMessenger.attach(kExampleCommand2, exampleCommand2);
+    cmdMessenger.attach(kExampleCommand3, exampleCommand3);
+}}}
 ```
 
-#### get_command_functions
+##### get_command_functions
 Required: True
-This function has no parameters and returns a strings that contains all the callbacks used for this appendage.
 
 Example:
-```python
-    def get_command_functions(self):
-        rv = "void readEncoder() {\n"
-        rv += "\tint indexNum = cmdMessenger.readBinArg<int>();\n"
-        rv += "\tif(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > {0:d}) {{\n".format(len(self.list_))
-        rv += "\t\tcmdMessenger.sendBinCmd(kError, kReadEncoder);\n"
-        rv += "\t\treturn;\n"
-        rv += "\t}\n"
-        rv += "\tcmdMessenger.sendBinCmd(kAcknowledge, kReadEncoder);\n"
-        rv += "\tcmdMessenger.sendBinCmd(kReadEncoderResult, encoders[indexNum].read());\n"
-        rv += "}\n\n"
+```
+command_functions{{{
+    void exampleCommand(){
+        int indexNum = cmdMessenger.readBinArg<int>();
+        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
+            cmdMessenger.sendBinCmd(kError, kExampleCommand);
+            return;
+        }
 
-        rv += "void zeroEncoder() {\n"
-        rv += "\tint indexNum = cmdMessenger.readBinArg<int>();\n"
-        rv += "\tif(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > {0:d}) {{\n".format(len(self.list_))
-        rv += "\t\tcmdMessenger.sendBinCmd(kError, kZeroEncoder);\n"
-        rv += "\t\treturn;\n"
-        rv += "\t}\n"
-        rv += "\tencoders[indexNum].write(0);\n"
-        rv += "\tcmdMessenger.sendBinCmd(kAcknowledge, kZeroEncoder);\n"
-        rv += "}\n\n"
-        return rv
+        ...Do something...
+
+        cmdMessenger.sendBinCmd(kAcknowledge, kExampleCommand);
+    }
+
+    void exampleCommand2(){
+        int indexNum = cmdMessenger.readBinArg<int>();
+        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
+            cmdMessenger.sendBinCmd(kError, kExampleCommand2);
+            return;
+        }
+
+        ...Do something...
+
+        cmdMessenger.sendBinCmd(kAcknowledge, kExampleCommand2);
+        cmdMessenger.sendBinCmd(kExampleCommand2Result, value);
+    }
+
+    void exampleCommand3(){
+        int indexNum = cmdMessenger.readBinArg<int>();
+        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
+            cmdMessenger.sendBinCmd(kError, kExampleCommand3);
+            return;
+        }
+
+        int value = cmdMessenger.readBinArg<int>();
+        if(!cmdMessenger.isArgOk()){
+            cmdMessenger.sendBinCmd(kError, kExampleCommand3);
+            return;
+        }
+
+        ...Do something...
+
+        cmdMessenger.sendBinCmd(kAcknowledge, kExampleCommand3);
+    }
+}}}
 ```
 
-#### get_loop_functions
+##### loop_functions
 Required: False
-If this appendage requires any functions to run in loop a string is returned here that writes them.
 
-
-#### get_extra_functions
-Required: False
-If any extra functions need to be created in the Arduino code they are create here. This should only be used if they cannot be in an Arduino class for some reason.
-
-#### get_core_values
-Required: True
-This function yields dictionaries that RIP's core uses when setting up the appendages.
-
-
-```python
-    def get_core_values(self):
-        for i, encoder in enumerate(self.list_):
-            a = {}
-            a['index'] = i
-            a['label'] = encoder.label
-            a['type'] = "Encoder"
-            a['ticks_per_rev'] = encoder.ticks_per_rev
-            yield a
 ```
+loop_functions{{{
+    ...something...
+}}}
+```
+
+
+##### extra_functions
+Required: False
+```
+extra_functions{{{
+    ...something...
+}}}
+```
+
+##### core_values
+Required: True
+Note: loop is not required for this
+
+```
+core_values{{{
+    val1 = <<<val1>>>
+    val2 = <<<val2>>>
+    val3 = <<<val3>>>
+}}}
+```
+
+#### subsections
+
+##### loop
+Loops through the list of appendages of that type. 
+
+```
+loop{{{
+    ...something...
+}}}
+```
+
+##### loop_separated_by
+Loops through the list of appendages of that type. Each line is separated by the character or characters specified.
+
+```
+loop_separated_by(','){{{
+    ...something...
+}}}
+```
+
+##### if, else if, else
+
+```
+if(...condition...){{{
+    ...something...
+}}}
+else if(...condition...){{{
+    ...something else...
+}}}
+else (...condition...){{{
+    ...another something...
+}}}
+```
+
+#### local variables
+Local variables are surrounded by '<<<' and '>>>'. 
+
+#### global variables
+Global variables are surrounded by '%%%'. The current only global variable is '%%%length%%%' which gets the length of the list of appendages of that type.

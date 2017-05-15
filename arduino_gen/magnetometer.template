@@ -1,0 +1,33 @@
+include{{{
+	<Wire.h>
+	"Magnetometer.h"
+}}}
+
+constructors{{{
+	// There can only be one
+	Magnetometer magnetometer;
+}}}
+
+setup{{{
+	Wire.begin();
+	magnetometer.config();
+}}}
+
+commands{{{
+	kReadX,
+	kReadXResult,
+	kReadY,
+	kReadYResult,
+	kReadZ,
+	kReadZResult,
+}}}
+
+command_attaches{{{
+	cmdMessenger.attach(kReadX, readX);
+	cmdMessenger.attach(kReadY, readY);
+	cmdMessenger.attach(kReadZ, readZ);
+}}}
+
+command_functions{{{
+	
+}}}
