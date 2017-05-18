@@ -24,7 +24,12 @@ def Logger():
         logger.setLevel(logging.DEBUG)
         fmt = '%(relativeCreated)6d - %(threadName)s - %(filename)s - %(levelname)s - %(message)s'
         # create file handler which logs even debug messages
-        logfn = '/var/log/spine/{0:s}_{1:d}.log'.format(name, int(time.time()))
+        # Mac
+        if os.platform() == 'Darwin':
+            logfn = '{0:s}_{1:d}.log'.format(name, int(time.time()))
+        # RPI
+        else:
+            logfn = '/var/log/spine/{0:s}_{1:d}.log'.format(name, int(time.time()))
 
         class GroupWriteRotatingFileHandler(logging.handlers.RotatingFileHandler):
             def _open(self):
