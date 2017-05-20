@@ -4,6 +4,7 @@ import logging.handlers
 import os
 import sys
 import time
+import platform
 # import atexit
 from .colors import color
 
@@ -25,10 +26,10 @@ def Logger():
         fmt = '%(relativeCreated)6d - %(threadName)s - %(filename)s - %(levelname)s - %(message)s'
         # create file handler which logs even debug messages
         # Mac
-        if os.platform() == 'Darwin':
+        if platform.system().lower() == 'darwin':
             logfn = '{0:s}_{1:d}.log'.format(name, int(time.time()))
         # RPI
-        else:
+        elif platform.system().lower() == 'linux':
             logfn = '/var/log/spine/{0:s}_{1:d}.log'.format(name, int(time.time()))
 
         class GroupWriteRotatingFileHandler(logging.handlers.RotatingFileHandler):
