@@ -31,32 +31,23 @@ command_attaches{{{
 
 command_functions{{{
     void printLCD(){
-        int indexNum = cmdMessenger.readBinArg<int>();
-        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
-            cmdMessenger.sendBinCmd(kError, kPrintLCD);
-            return;
-        }
+        %%%index_num(kPrintLCD)%%%
+
         String text = cmdMessenger.readStringArg();
         lcds[indexNum].print(text);
         cmdMessenger.sendBinCmd(kAcknowledge, kPrintLCD);
     }
 
     void clearLCD(){
-        int indexNum = cmdMessenger.readBinArg<int>();
-        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
-            cmdMessenger.sendBinCmd(kError, kPrintLCD);
-            return;
-        }
+        %%%index_num(kClearLCD)%%%
+
         lcds[indexNum].clear();
         cmdMessenger.sendBinCmd(kAcknowledge, kClearLCD);
     }
 
     void setCursorLCD(){
-        int indexNum = cmdMessenger.readBinArg<int>();
-        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
-            cmdMessenger.sendBinCmd(kError, kPrintLCD);
-            return;
-        }
+        %%%index_num(kSetCursorLCD)%%%
+        
         lcds[indexNum].setCursor(cmdMessenger.readBinArg<int>(), cmdMessenger.readBinArg<int>());
         cmdMessenger.sendBinCmd(kAcknowledge, kSetCursorLCD);
     }

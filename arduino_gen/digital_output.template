@@ -28,12 +28,10 @@ command_attaches{{{
 
 command_functions{{{
     void writeDigitalOutput() {
-        int indexNum = cmdMessenger.readBinArg<int>();
-        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
-            cmdMessenger.sendBinCmd(kError, kWriteDigitalOutput);
-            return;
-        }
-        bool value = cmdMessenger.readBinArg<bool>();
+        %%%index_num(kWriteDigitalOutput)%%%
+
+        %%%variable(value, bool, kWriteDigitalOutput)%%%
+
         digitalWrite(digital_outputs[indexNum], value);
         cmdMessenger.sendBinCmd(kAcknowledge, kWriteDigitalOutput);
     }

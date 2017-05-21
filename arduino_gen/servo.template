@@ -30,16 +30,10 @@ command_attaches{{{
 
 command_functions{{{
     void setServo() {
-        int indexNum = cmdMessenger.readBinArg<int>();
-        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
-            cmdMessenger.sendBinCmd(kError, kSetServo);
-            return;
-        }
-        int value = cmdMessenger.readBinArg<int>();
-        if(!cmdMessenger.isArgOk()){
-            cmdMessenger.sendBinCmd(kError, kSetServo);
-            return;
-        }
+        %%%index_num(kSetServo)%%%
+
+        %%%variable(value, int, kSetServo)%%%
+
         if(!servos[indexNum].attached()){
             servos[indexNum].attach(servo_pins[indexNum]);
         }
@@ -48,11 +42,8 @@ command_functions{{{
     }
 
     void detachServo() {
-        int indexNum = cmdMessenger.readBinArg<int>();
-        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
-            cmdMessenger.sendBinCmd(kError, kDetachServo);
-            return;
-        }
+        %%%index_num(kDetachServo)%%%
+        
         servos[indexNum].detach();
         cmdMessenger.sendBinCmd(kAcknowledge, kDetachServo);
     }

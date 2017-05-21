@@ -5,7 +5,7 @@ pins{{{
 }}}
 
 constructors{{{
-    char analog_outputs[%%%length%%%] = {
+    char analog_inputs[%%%length%%%] = {
     loop_separated_by(','){{{
         <<<label>>>_pin
     }}}
@@ -14,25 +14,24 @@ constructors{{{
 
 setup{{{
     loop{{{
-        pinMode(<<<label>>>_pin, OUTPUT);
+        pinMode(<<<label>>>_pin, INPUT);
     }}}
 }}}
 
 commands{{{
-    kWriteAnalogOutput,
+    kReadAnalogInput,
+    kReadAnalogInputResult,
 }}}
 
 command_attaches{{{
-    cmdMessenger.attach(kWriteAnalogOutput, writeAnalogOutput);
+    cmdMessenger.attach(kReadAnalogIntput, readAnalogInput);
 }}}
 
 command_functions{{{
     void writeAnalogOutput() {
         %%%index_num(kWriteAnalogOutput)%%%
 
-        %%%variable(value, int, kWriteAnalogOutput)%%%
-
-        analogWrite(analog_outputs[indexNum], value);
-        cmdMessenger.sendBinCmd(kAcknowledge, kWriteAnalogOutput);
+        cmdMessenger.sendBinCmd(kAcknowledge, kReadAnalogInput);
+        cmdMessenger.sendBinCmd(kReadAnalogInputResult, analogRead(analog_inputs[indexNum]));
     }
 }}}

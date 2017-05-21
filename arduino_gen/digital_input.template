@@ -34,11 +34,8 @@ command_attaches{{{
 
 command_functions{{{
     void readDigitalInput() {
-        int indexNum = cmdMessenger.readBinArg<int>();
-        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
-            cmdMessenger.sendBinCmd(kError, kReadDigitalInput);
-            return;
-        }
+        %%%index_num(kReadDigitalInput)%%%
+        
         cmdMessenger.sendBinCmd(kAcknowledge, kReadDigitalInput);
         cmdMessenger.sendBinCmd(kReadDigitalInputResult, digitalRead(digital_inputs[indexNum]));
     }

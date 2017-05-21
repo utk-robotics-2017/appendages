@@ -28,11 +28,8 @@ command_attaches{{{
 
 command_functions{{{
     void readUltrasonic() {
-        int indexNum = cmdMessenger.readBinArg<int>();
-        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
-            cmdMessenger.sendBinCmd(kError, kReadUltrasonic);
-            return;
-        }
+        %%%index_num(kReadUltrasonic)%%%
+        
         cmdMessenger.sendBinCmd(kAcknowledge, kReadUltrasonic);
         cmdMessenger.sendBinCmd(kReadUltrasonicResult, ultrasonics[indexNum].ping_cm());
     }

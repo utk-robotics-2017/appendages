@@ -37,21 +37,15 @@ command_attaches{{{
 
 command_functions{{{
     void readEncoder() {
-        int indexNum = cmdMessenger.readBinArg<int>();
-        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
-            cmdMessenger.sendBinCmd(kError, kReadEncoder);
-                return;
-            }
-            cmdMessenger.sendBinCmd(kAcknowledge, kReadEncoder);
-            cmdMessenger.sendBinCmd(kReadEncoderResult, encoders[indexNum].read());
-        }
+        %%%index_num(kReadEncoder)%%%
+
+        cmdMessenger.sendBinCmd(kAcknowledge, kReadEncoder);
+        cmdMessenger.sendBinCmd(kReadEncoderResult, encoders[indexNum].read());
+    }
 
     void zeroEncoder() {
-        int indexNum = cmdMessenger.readBinArg<int>()
-        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
-            cmdMessenger.sendBinCmd(kError, kZeroEncoder);
-            return;
-        }
+        %%%index_num(kZeroEncoder)%%%
+
         encoders[indexNum].write(0);
         cmdMessenger.sendBinCmd(kAcknowledge, kZeroEncoder);
     }

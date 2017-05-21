@@ -23,11 +23,8 @@ command_attaches{{{
 
 command_functions{{{
 	void setArm() {
-        int indexNum = cmdMessenger.readBinArg<int>();
-        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
-        	cmdMessenger.sendBinCmd(kError, kSetArm);
-        	return;
-        }
+        %%%index_num(kSetArm)%%%
+
         int pos[5];
         for(int i = 0; i < 5; i++) {
         	pos[i] = cmdMessenger.readBinArg<int>();
@@ -41,11 +38,8 @@ command_functions{{{
     }
 
     void detachArm() {
-        int indexNum = cmdMessenger.readBinArg<int>();
-        if(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > %%%length%%%) {
-        	cmdMessenger.sendBinCmd(kError, kDetachArm);
-        	return;
-        }
+        %%%index_num(kDetachArm)%%%
+
         arms[indexNum].detach();
         cmdMessenger.sendBinCmd(kAcknowledge, kDetachArm);
     }
