@@ -5,7 +5,7 @@ class Switch(Component):
     READ = "kReadSwitch"
     READ_RESULT = "kReadSwitchResult"
 
-    def __init__(self, spine, devname, config, commands, sim):
+    def __init__(self, spine, devname, config, commands, sim: bool) -> None:
         self.spine = spine
         self.devname = devname
         self.label = config['label']
@@ -42,8 +42,8 @@ class Switch(Component):
         return hal_data
 
     ### RIP_COM
-    def interact(self, parseResults):
-        def help(name):
+    def interact(self, parseResults: list) -> None:
+        def help(name: str) -> None:
             self.__dict__["help_" + name]()
 
         name = parseResults.parsed[0]
@@ -82,5 +82,5 @@ class Switch(Component):
         print("")
         print("value: [-1023, 1023]")
 
-    def complete(self, text, line, begidx, endidx):
+    def complete(self, text: str, line: str, begidx: int, endidx: int) -> list:
         return [i for i in ["read", "read_until_change"] if i.startswith(text)]
