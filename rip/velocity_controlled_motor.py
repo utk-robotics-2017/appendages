@@ -11,7 +11,7 @@ class VelocityControlledMotor(Component):
     POSITION = "kGetVCMPosition"
     POSITION_RESULT = "kGetVCMPositionResult"
 
-    def __init__(self, spine, devname, config, commands, sim):
+    def __init__(self, spine: object, devname: str, config: dict, commands: dict, sim: bool) -> None:
         self.spine = spine
         self.devname = devname
         self.label = config['label']
@@ -42,14 +42,14 @@ class VelocityControlledMotor(Component):
         yield self.positionIndex, [self.POSITION, "i"]
         yield self.positionResultIndex, [self.POSITION_RESULT, "d"]
 
-    def drive(self, value):
+    def drive(self, value) -> None:
         if self.sim:
             # TODO: update sim_velocity based on sim_motor
             return
 
         self.spine.send(self.devname, False, self.DRIVE, self.index, value)
 
-    def set(self, velocity):
+    def set(self, velocity) -> None:
         if self.sim:
             self.sim_velocity = velocity
             return
@@ -72,7 +72,7 @@ class VelocityControlledMotor(Component):
         response = Angle(response[0], Angle.rev)
         return response
 
-    def set_position(self, position):
+    def set_position(self, position) -> None:
         if self.sim:
             self.sim_position = position
 
@@ -89,7 +89,7 @@ class VelocityControlledMotor(Component):
         dependencies[self.encoder]['sim_velocity'] = self.sim_velocity
         return dependencies
 
-    def sim_update(self, tm_diff):
+    def sim_update(self, tm_diff) -> None:
         self.sim_position += self.sim_velocity * tm_diff
 
     def get_hal_data(self):
@@ -99,7 +99,7 @@ class VelocityControlledMotor(Component):
         return hal_data
 
     ### RIP_COM
-    def interact(self, parseResults):
+    def interact(self, parseResults: list) -> None:
         def help(name):
             self.__dict__["help_" + name]()
 
@@ -182,6 +182,6 @@ class VelocityControlledMotor(Component):
         print("       <vcm:str> set_position <position:float>")
         print("       <vcm:str> stop")
 
-    def complete(self, text, line, begidx, endidx):
+    def complete(self, text: str, line: str, begidx: int, endidx: int):
         return [i for i in ["drive", "set", "get_velocity", "get_position", "set_position", "stop"]
                 if i.startswith(text)]
