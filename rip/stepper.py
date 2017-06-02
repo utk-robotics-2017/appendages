@@ -6,7 +6,7 @@ class Stepper(Component):
     SET_SPEED = "kSetStepperSpeed"
     STEP = "kStepStepper"
 
-    def __init__(self, spine, devname, config, commands, sim):
+    def __init__(self, spine: object, devname: str, config: dict, commands: dict, sim: bool):
         self.spine = spine
         self.devname = devname
         self.label = config['label']
@@ -26,7 +26,7 @@ class Stepper(Component):
         yield self.setSpeedIndex, [self.SET_SPEED, "ii"]
         yield self.stepIndex, [self.STEP, "ii"]
 
-    def set_speed(self, velocity):
+    def set_speed(self, velocity: int):
         '''
         Set speed for a stepper motor.
         :param value:
@@ -40,7 +40,7 @@ class Stepper(Component):
 
         self.spine.send(self.devname, False, self.SET_SPEED, self.index, velocity)
 
-    def set_angle(self, angle):
+    def set_angle(self, angle) -> None:
         '''
         Set angle for a stepper motor
         :param angle:
@@ -50,7 +50,7 @@ class Stepper(Component):
         steps = (angle - self.angle) / self.angle_per_step
         self.step(steps)
 
-    def step(self, steps):
+    def step(self, steps: int) -> None:
         '''
         Step the motor forward value amount
 
@@ -67,10 +67,10 @@ class Stepper(Component):
         self.spine.send(self.devname, False, self.STEP, self.index, value)
         self.angle += Constant(steps) * self.angle_per_step
 
-    def sim_update(self, tm_diff):
+    def sim_update(self, tm_diff) -> None:
         pass
 
-    def get_hal_data(self):
+    def get_hal_data(self) -> dict:
         hal_data = {}
         hal_data['velocity'] = self.sim_velocity
         hal_data['step_position'] = self.step_position
@@ -78,7 +78,7 @@ class Stepper(Component):
         return hal_data
 
     ### RIP_COM
-    def interact(self, parseResults):
+    def interact(self, parseResults: list) -> None:
         def help(name):
             self.__dict__["help_" + name]()
 
@@ -135,5 +135,5 @@ class Stepper(Component):
         print("       <stepper:str> set_angle <angle:float>")
         print("       <stepper:str> step <steps:int>")
 
-    def complete(self, text, line, begidx, endidx):
+    def complete(self, text: str, line: str, begidx: int, endidx: int):
         return [i for i in ["set_speed", "set_angle", "step"] if i.startswith(text)]

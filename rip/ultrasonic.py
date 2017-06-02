@@ -6,7 +6,7 @@ class Ultrasonic(Component):
     READ = "kReadUltrasonic"
     READ_RESULT = "kReadUltrasonicResult"
 
-    def __init__(self, spine, devname, config, commands, sim):
+    def __init__(self, spine: object, devname: str, config: dict, commands: dict, sim: bool):
         self.spine = spine
         self.devname = devname
         self.label = config['label']
@@ -23,7 +23,7 @@ class Ultrasonic(Component):
         yield self.readIndex, [self.READ, "i"]
         yield self.readResultIndex, [self.READ_RESULT, "L"]
 
-    def set_distance(self, distance):
+    def set_distance(self, distance) -> None:
         if self.sim:
             self.sim_distance = distance
 
@@ -44,7 +44,7 @@ class Ultrasonic(Component):
 
         return converted_response
 
-    def sim_update(self, tm_diff):
+    def sim_update(self, tm_diff) -> None:
         pass
 
     def get_hal_data(self):
@@ -53,8 +53,8 @@ class Ultrasonic(Component):
         return hal_data
 
     ### RIP_COM
-    def interact(self, parseResults):
-        def help(name):
+    def interact(self, parseResults: list) -> None:
+        def help(name) -> None:
             self.__dict__["help_" + name]()
 
         name = parseResults.parsed[0]
@@ -91,5 +91,5 @@ class Ultrasonic(Component):
         print("usage: <ultrasonic:str> set_distance <distance:float>")
         print("       <ultrasonic:str> read")
 
-    def complete(self, text, line, begidx, endidx):
+    def complete(self, text: str, line: str, begidx: int, endidx: int):
         return [i for i in ["set_distance", "read"] if i.startswith(text)]

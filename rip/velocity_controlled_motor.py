@@ -49,7 +49,7 @@ class VelocityControlledMotor(Component):
 
         self.spine.send(self.devname, False, self.DRIVE, self.index, value)
 
-    def set(self, velocity) -> None:
+    def set(self, velocity: int) -> None:
         if self.sim:
             self.sim_velocity = velocity
             return

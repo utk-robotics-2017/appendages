@@ -5,7 +5,7 @@ class Switch(Component):
     READ = "kReadSwitch"
     READ_RESULT = "kReadSwitchResult"
 
-    def __init__(self, spine, devname, config, commands, sim: bool) -> None:
+    def __init__(self, spine: object, devname: str, config: dict, commands: dict, sim: bool) -> None:
         self.spine = spine
         self.devname = devname
         self.label = config['label']
